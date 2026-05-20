@@ -1,0 +1,31 @@
+import { MetadataRoute } from "next";
+
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || "https://homemadeeverything.com";
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const staticPages: MetadataRoute.Sitemap = [
+    { url: BASE_URL, lastModified: new Date(), changeFrequency: "daily", priority: 1.0 },
+    { url: `${BASE_URL}/products`, lastModified: new Date(), changeFrequency: "daily", priority: 0.9 },
+    { url: `${BASE_URL}/auth/login`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
+    { url: `${BASE_URL}/auth/register`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.3 },
+    { url: `${BASE_URL}/vendor/register`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
+  ];
+
+  // Dynamic product pages
+  let productPages: MetadataRoute.Sitemap = [];
+  try {
+    const { db } = await import("@/lib/db");
+    const products = await db.product.findMany({
+      where: { status: "ACTIVE" },
+      select: { slug: true, updatedAt: true },
+    });
+    productPages = products.map((p) => ({
+      url: `${BASE_URL}/products/${p.slug}`,
+      lastModified: p.updatedAt,
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    }));
+  } catch {}
+
+  return [...staticPages, ...productPages];
+}
