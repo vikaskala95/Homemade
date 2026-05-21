@@ -15,6 +15,15 @@ const onlineUsers = new Map<string, { socketId: string; userName: string; lastSe
 
 app.prepare().then(() => {
   const httpServer = createServer((req, res) => {
+    if (req.url === "/health") {
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({
+        status: "healthy",
+        uptime: process.uptime(),
+        timestamp: new Date().toISOString(),
+      }));
+      return;
+    }
     const parsedUrl = parse(req.url!, true);
     handle(req, res, parsedUrl);
   });
@@ -93,19 +102,6 @@ app.prepare().then(() => {
       io.emit("online-users", Array.from(onlineUsers.keys()));
       console.log("Client disconnected:", socket.id);
     });
-  });
-
-  // Health check endpoint
-  httpServer.on("request", (req, res) => {
-    if (req.url === "/health") {
-      res.writeHead(200, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({
-        status: "healthy",
-        uptime: process.uptime(),
-        timestamp: new Date().toISOString(),
-        onlineUsers: onlineUsers.size,
-      }));
-    }
   });
 
   httpServer.listen(port, hostname, () => {
