@@ -5,7 +5,7 @@ builder = "NIXPACKS"
 providers = ["node"]
 
 [deploy]
-startCommand = "npx prisma db push --accept-data-loss && npm start"
+startCommand = "npx prisma db push --accept-data-loss --skip-generate && npm start"
 healthcheckPath = "/health"
 healthcheckTimeout = 300
 restartPolicyType = "ON_FAILURE"
