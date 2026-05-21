@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export default auth((req) => {
   const { nextUrl } = req;
-  const isLoggedIn = !!req.auth;
+  const isLoggedIn = !!req.auth?.user;
   const role = req.auth?.user?.role;
 
   const protectedRoutes = ["/dashboard", "/orders", "/cart", "/checkout", "/wishlist"];
