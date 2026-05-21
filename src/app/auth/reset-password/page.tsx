@@ -6,13 +6,12 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { PasswordInput } from "@/components/auth/password-input";
 import { PasswordStrength } from "@/components/auth/password-strength";
 import { resetPasswordSchema, type ResetPasswordFormData } from "@/lib/validations/auth";
 import toast from "react-hot-toast";
-import { Loader2, CheckCircle } from "lucide-react";
+import { Loader2, CheckCircle, ArrowRight, AlertTriangle } from "lucide-react";
 import { useState } from "react";
 
 function ResetPasswordForm() {
@@ -39,28 +38,33 @@ function ResetPasswordForm() {
 
   if (!token) {
     return (
-      <Card className="w-full max-w-md shadow-xl border-0 dark:bg-gray-900 dark:border dark:border-gray-800">
-        <CardContent className="py-8 text-center">
-          <p className="text-red-500 mb-4">Invalid reset link</p>
-          <Link href="/auth/forgot-password">
-            <Button variant="outline" className="dark:border-gray-700">Request New Link</Button>
-          </Link>
-        </CardContent>
-      </Card>
+      <div className="w-full max-w-[420px] text-center">
+        <div className="w-16 h-16 rounded-2xl bg-red-100 dark:bg-red-950/50 flex items-center justify-center mx-auto mb-5">
+          <AlertTriangle className="h-8 w-8 text-red-600 dark:text-red-400" />
+        </div>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Invalid reset link</h1>
+        <p className="text-gray-500 dark:text-gray-400 text-sm mb-8">
+          This link is invalid or has expired. Please request a new one.
+        </p>
+        <Link href="/auth/forgot-password">
+          <Button className="h-11 rounded-xl bg-orange-600 hover:bg-orange-700 font-semibold px-8">
+            Request New Link
+          </Button>
+        </Link>
+      </div>
     );
   }
 
   if (success) {
     return (
-      <Card className="w-full max-w-md shadow-xl border-0 dark:bg-gray-900 dark:border dark:border-gray-800">
-        <CardContent className="py-8 text-center">
-          <div className="w-16 h-16 rounded-full bg-green-100 dark:bg-green-950 flex items-center justify-center mx-auto mb-4">
-            <CheckCircle className="h-8 w-8 text-green-600 dark:text-green-400" />
-          </div>
-          <p className="text-lg font-medium mb-2 dark:text-white">Password Reset!</p>
-          <p className="text-gray-500 dark:text-gray-400 text-sm">Redirecting to login...</p>
-        </CardContent>
-      </Card>
+      <div className="w-full max-w-[420px] text-center">
+        <div className="w-16 h-16 rounded-2xl bg-green-100 dark:bg-green-950/50 flex items-center justify-center mx-auto mb-5">
+          <CheckCircle className="h-8 w-8 text-green-600 dark:text-green-400" />
+        </div>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Password updated!</h1>
+        <p className="text-gray-500 dark:text-gray-400 text-sm mb-1">Your password has been reset successfully.</p>
+        <p className="text-gray-400 dark:text-gray-500 text-sm">Redirecting to sign in...</p>
+      </div>
     );
   }
 
@@ -85,59 +89,75 @@ function ResetPasswordForm() {
   };
 
   return (
-    <Card className="w-full max-w-md shadow-xl border-0 dark:bg-gray-900 dark:border dark:border-gray-800">
-      <CardHeader className="text-center space-y-2">
-        <CardTitle className="text-2xl font-bold dark:text-white">Reset Password</CardTitle>
-        <CardDescription className="dark:text-gray-400">Enter your new password</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <input type="hidden" {...register("token")} />
-          <div className="space-y-2">
-            <Label htmlFor="password" className="dark:text-gray-300">New Password</Label>
-            <PasswordInput
-              id="password"
-              placeholder="Enter new password"
-              {...register("password")}
-              autoComplete="new-password"
-            />
-            <PasswordStrength password={password} />
-            {errors.password && (
-              <p className="text-xs text-red-500" role="alert">{errors.password.message}</p>
-            )}
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="confirmPassword" className="dark:text-gray-300">Confirm Password</Label>
-            <PasswordInput
-              id="confirmPassword"
-              placeholder="Repeat new password"
-              showIcon={false}
-              {...register("confirmPassword")}
-              autoComplete="new-password"
-              className="pl-3"
-            />
-            {errors.confirmPassword && (
-              <p className="text-xs text-red-500" role="alert">{errors.confirmPassword.message}</p>
-            )}
-          </div>
-          <Button
-            type="submit"
-            className="w-full h-10 rounded-lg bg-orange-600 hover:bg-orange-700"
-            disabled={isSubmitting}
-          >
-            {isSubmitting && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-            Reset Password
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+    <div className="w-full max-w-[420px]">
+      <div className="mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
+          Set new password
+        </h1>
+        <p className="mt-2 text-gray-500 dark:text-gray-400">
+          Choose a strong password for your Homemade Everything account.
+        </p>
+      </div>
+
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+        <input type="hidden" {...register("token")} />
+        <div className="space-y-1.5">
+          <Label htmlFor="password" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            New Password
+          </Label>
+          <PasswordInput
+            id="password"
+            placeholder="Enter new password"
+            {...register("password")}
+            autoComplete="new-password"
+          />
+          <PasswordStrength password={password} />
+          {errors.password && (
+            <p className="text-xs text-red-500" role="alert">{errors.password.message}</p>
+          )}
+        </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="confirmPassword" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            Confirm Password
+          </Label>
+          <PasswordInput
+            id="confirmPassword"
+            placeholder="Repeat new password"
+            showIcon={false}
+            {...register("confirmPassword")}
+            autoComplete="new-password"
+            className="pl-3"
+          />
+          {errors.confirmPassword && (
+            <p className="text-xs text-red-500" role="alert">{errors.confirmPassword.message}</p>
+          )}
+        </div>
+        <Button
+          type="submit"
+          className="w-full h-11 rounded-xl bg-orange-600 hover:bg-orange-700 font-semibold shadow-lg shadow-orange-600/25"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? (
+            <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Resetting...</>
+          ) : (
+            <>Reset Password<ArrowRight className="h-4 w-4 ml-2" /></>
+          )}
+        </Button>
+      </form>
+    </div>
   );
 }
 
 export default function ResetPasswordPage() {
   return (
     <Suspense fallback={
-      <div className="w-full max-w-md h-[400px] rounded-xl bg-white/50 dark:bg-gray-900/50 animate-pulse" />
+      <div className="w-full max-w-[420px] space-y-4">
+        <div className="h-8 w-48 rounded-lg bg-gray-100 dark:bg-gray-800 animate-pulse" />
+        <div className="h-4 w-64 rounded bg-gray-100 dark:bg-gray-800 animate-pulse" />
+        <div className="h-11 w-full rounded-xl bg-gray-100 dark:bg-gray-800 animate-pulse mt-8" />
+        <div className="h-11 w-full rounded-xl bg-gray-100 dark:bg-gray-800 animate-pulse" />
+        <div className="h-11 w-full rounded-xl bg-orange-100 dark:bg-orange-900/30 animate-pulse mt-2" />
+      </div>
     }>
       <ResetPasswordForm />
     </Suspense>

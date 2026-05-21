@@ -7,10 +7,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { forgotPasswordSchema, type ForgotPasswordFormData } from "@/lib/validations/auth";
 import toast from "react-hot-toast";
-import { Loader2, ArrowLeft, Mail } from "lucide-react";
+import { Loader2, ArrowLeft, Mail, ArrowRight } from "lucide-react";
 
 export default function ForgotPasswordPage() {
   const [sent, setSent] = useState(false);
@@ -43,41 +42,46 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <Card className="w-full max-w-md shadow-xl border-0 dark:bg-gray-900 dark:border dark:border-gray-800">
-      <CardHeader className="text-center space-y-2">
-        <CardTitle className="text-2xl font-bold dark:text-white">Forgot Password</CardTitle>
-        <CardDescription className="dark:text-gray-400">
-          Enter your email to receive a password reset link
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        {sent ? (
-          <div className="text-center py-4">
-            <div className="w-16 h-16 rounded-full bg-orange-100 dark:bg-orange-950 flex items-center justify-center mx-auto mb-4">
-              <Mail className="h-8 w-8 text-orange-600 dark:text-orange-400" />
-            </div>
-            <p className="text-lg font-medium mb-2 dark:text-white">Check your email</p>
-            <p className="text-gray-500 dark:text-gray-400 text-sm mb-6">
-              If an account with that email exists, we&apos;ve sent a password reset link.
-            </p>
-            <Link href="/auth/login">
-              <Button variant="outline" className="w-full dark:border-gray-700 dark:hover:bg-gray-800">
-                <ArrowLeft className="h-4 w-4 mr-2" /> Back to Login
-              </Button>
-            </Link>
+    <div className="w-full max-w-[420px]">
+      {sent ? (
+        <div className="text-center">
+          <div className="w-16 h-16 rounded-2xl bg-orange-100 dark:bg-orange-950/50 flex items-center justify-center mx-auto mb-5">
+            <Mail className="h-8 w-8 text-orange-600 dark:text-orange-400" />
           </div>
-        ) : (
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email" className="dark:text-gray-300">Email</Label>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Check your email</h1>
+          <p className="text-gray-500 dark:text-gray-400 text-sm mb-8 max-w-xs mx-auto">
+            If an account with that email exists, we&apos;ve sent a password reset link. Check your inbox and spam folder.
+          </p>
+          <Link href="/auth/login">
+            <Button variant="outline" className="w-full h-11 rounded-xl border-gray-200 dark:border-gray-800 dark:hover:bg-gray-900">
+              <ArrowLeft className="h-4 w-4 mr-2" /> Back to Sign In
+            </Button>
+          </Link>
+        </div>
+      ) : (
+        <>
+          <div className="mb-8">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
+              Forgot password?
+            </h1>
+            <p className="mt-2 text-gray-500 dark:text-gray-400">
+              No worries, we&apos;ll send you a reset link to your email.
+            </p>
+          </div>
+
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+            <div className="space-y-1.5">
+              <Label htmlFor="email" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                Email address
+              </Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 dark:text-gray-500" />
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 dark:text-gray-500" />
                 <Input
                   id="email"
                   type="email"
                   placeholder="you@example.com"
                   {...register("email")}
-                  className="pl-10 h-10 rounded-lg dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
+                  className="pl-10 h-11 rounded-xl border-gray-200 bg-gray-50/50 focus:bg-white dark:border-gray-800 dark:bg-gray-900 dark:text-gray-100"
                   autoFocus
                 />
               </div>
@@ -87,20 +91,25 @@ export default function ForgotPasswordPage() {
             </div>
             <Button
               type="submit"
-              className="w-full h-10 rounded-lg bg-orange-600 hover:bg-orange-700"
+              className="w-full h-11 rounded-xl bg-orange-600 hover:bg-orange-700 font-semibold shadow-lg shadow-orange-600/25"
               disabled={isSubmitting}
             >
-              {isSubmitting && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-              Send Reset Link
+              {isSubmitting ? (
+                <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Sending...</>
+              ) : (
+                <>Send Reset Link<ArrowRight className="h-4 w-4 ml-2" /></>
+              )}
             </Button>
-            <div className="text-center">
-              <Link href="/auth/login" className="text-sm text-orange-600 hover:underline">
-                Back to Login
-              </Link>
-            </div>
           </form>
-        )}
-      </CardContent>
-    </Card>
+
+          <p className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
+            Remember your password?{" "}
+            <Link href="/auth/login" className="text-orange-600 font-semibold hover:text-orange-700 transition-colors">
+              Sign in
+            </Link>
+          </p>
+        </>
+      )}
+    </div>
   );
 }
