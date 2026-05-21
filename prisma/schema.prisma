@@ -13,6 +13,7 @@ enum UserRole {
   CUSTOMER
   VENDOR
   ADMIN
+  DELIVERY
 }
 
 enum OrderStatus {
@@ -89,6 +90,7 @@ model User {
   chatRooms     ChatRoomMember[]
   auditLogs     AuditLog[]
   wallet        Wallet?
+  loginActivity LoginActivity[]
 
   @@index([email])
   @@index([role])
@@ -532,6 +534,24 @@ model EmailVerificationToken {
 
   @@unique([email, token])
   @@index([email])
+}
+
+// ==================== LOGIN ACTIVITY ====================
+
+model LoginActivity {
+  id        String   @id @default(cuid())
+  userId    String
+  ip        String?
+  userAgent String?
+  device    String?
+  location  String?
+  success   Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([createdAt])
 }
 
 // ==================== SUBSCRIPTION / MONETIZATION ====================

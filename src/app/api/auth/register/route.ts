@@ -1,15 +1,10 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { db } from "@/lib/db";
-import { z } from "zod";
 import { rateLimit } from "@/lib/rate-limit";
-
-const registerSchema = z.object({
-  name: z.string().min(2).max(100),
-  email: z.string().email(),
-  phone: z.string().optional(),
-  password: z.string().min(8).max(100),
-});
+import { registerSchema } from "@/lib/validations/auth";
+import { generateToken } from "@/lib/security";
+import { sendVerificationEmail } from "@/lib/email";
 
 export async function POST(req: Request) {
   try {
@@ -22,16 +17,18 @@ export async function POST(req: Request) {
     const parsed = registerSchema.safeParse(body);
 
     if (!parsed.success) {
+      const firstError = parsed.error.errors[0]?.message || "Invalid input";
       return NextResponse.json(
-        { error: "Invalid input", details: parsed.error.flatten() },
+        { error: firstError, details: parsed.error.flatten() },
         { status: 400 }
       );
     }
 
-    const { name, email, phone, password } = parsed.data;
+    const { name, email, phone, password, role } = parsed.data;
+    const normalizedEmail = email.toLowerCase().trim();
 
     const existingUser = await db.user.findUnique({
-      where: { email },
+      where: { email: normalizedEmail },
     });
 
     if (existingUser) {
@@ -58,10 +55,10 @@ export async function POST(req: Request) {
     const user = await db.user.create({
       data: {
         name,
-        email,
+        email: normalizedEmail,
         phone: phone || null,
         password: hashedPassword,
-        role: "CUSTOMER",
+        role: role || "CUSTOMER",
       },
     });
 
@@ -69,6 +66,17 @@ export async function POST(req: Request) {
     await db.cart.create({
       data: { userId: user.id },
     });
+
+    // Send verification email
+    const token = generateToken();
+    await db.emailVerificationToken.create({
+      data: {
+        email: normalizedEmail,
+        token,
+        expires: new Date(Date.now() + 86400000), // 24 hours
+      },
+    });
+    await sendVerificationEmail(normalizedEmail, token);
 
     return NextResponse.json(
       { message: "Account created successfully", userId: user.id },

@@ -34,13 +34,13 @@ export function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
+    <header className="sticky top-0 z-50 bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
             <Store className="h-8 w-8 text-orange-600" />
-            <span className="text-xl font-bold text-gray-900">
+            <span className="text-xl font-bold text-gray-900 dark:text-white">
               Homemade<span className="text-orange-600">Everything</span>
             </span>
           </Link>
@@ -54,14 +54,14 @@ export function Navbar() {
                 placeholder="Search homemade products..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
               />
             </div>
           </form>
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center space-x-4">
-            <Link href="/products" className="text-sm text-gray-600 hover:text-orange-600 transition">
+            <Link href="/products" className="text-sm text-gray-600 dark:text-gray-300 hover:text-orange-600 transition">
               Browse
             </Link>
 
@@ -92,10 +92,10 @@ export function Navbar() {
                   <Button variant="ghost" size="icon">
                     <User className="h-5 w-5" />
                   </Button>
-                  <div className="absolute right-0 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                    <div className="p-2 border-b border-gray-100">
-                      <p className="text-sm font-medium text-gray-900">{session.user?.name}</p>
-                      <p className="text-xs text-gray-500">{session.user?.email}</p>
+                  <div className="absolute right-0 mt-1 w-48 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                    <div className="p-2 border-b border-gray-100 dark:border-gray-700">
+                      <p className="text-sm font-medium text-gray-900 dark:text-white">{session.user?.name}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">{session.user?.email}</p>
                     </div>
                     <div className="p-1">
                       <Link href="/dashboard" className="flex items-center space-x-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md">
@@ -167,7 +167,7 @@ export function Navbar() {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-gray-200 bg-white">
+        <div className="md:hidden border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950">
           <div className="px-4 py-3 space-y-2">
             <Link href="/products" className="block px-3 py-2 text-gray-700 hover:bg-gray-50 rounded-md" onClick={() => setMobileMenuOpen(false)}>
               Browse Products

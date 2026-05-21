@@ -9,6 +9,7 @@ export default auth((req) => {
   const protectedRoutes = ["/dashboard", "/orders", "/cart", "/checkout", "/wishlist"];
   const vendorRoutes = ["/vendor/dashboard", "/vendor/products", "/vendor/orders", "/vendor/analytics", "/vendor/settings"];
   const adminRoutes = ["/admin"];
+  const deliveryRoutes = ["/delivery"];
   const authRoutes = ["/auth/login", "/auth/register"];
 
   // Redirect logged in users from auth pages
@@ -18,13 +19,17 @@ export default auth((req) => {
 
   // Protect routes that require authentication
   if (!isLoggedIn && protectedRoutes.some((r) => nextUrl.pathname.startsWith(r))) {
-    return NextResponse.redirect(new URL("/auth/login", nextUrl));
+    const loginUrl = new URL("/auth/login", nextUrl);
+    loginUrl.searchParams.set("callbackUrl", nextUrl.pathname);
+    return NextResponse.redirect(loginUrl);
   }
 
   // Vendor routes
   if (vendorRoutes.some((r) => nextUrl.pathname.startsWith(r))) {
     if (!isLoggedIn) {
-      return NextResponse.redirect(new URL("/auth/login", nextUrl));
+      const loginUrl = new URL("/auth/login", nextUrl);
+      loginUrl.searchParams.set("callbackUrl", nextUrl.pathname);
+      return NextResponse.redirect(loginUrl);
     }
     if (role !== "VENDOR" && role !== "ADMIN") {
       return NextResponse.redirect(new URL("/vendor/register", nextUrl));
@@ -34,9 +39,23 @@ export default auth((req) => {
   // Admin routes
   if (adminRoutes.some((r) => nextUrl.pathname.startsWith(r))) {
     if (!isLoggedIn) {
-      return NextResponse.redirect(new URL("/auth/login", nextUrl));
+      const loginUrl = new URL("/auth/login", nextUrl);
+      loginUrl.searchParams.set("callbackUrl", nextUrl.pathname);
+      return NextResponse.redirect(loginUrl);
     }
     if (role !== "ADMIN") {
+      return NextResponse.redirect(new URL("/", nextUrl));
+    }
+  }
+
+  // Delivery routes
+  if (deliveryRoutes.some((r) => nextUrl.pathname.startsWith(r))) {
+    if (!isLoggedIn) {
+      const loginUrl = new URL("/auth/login", nextUrl);
+      loginUrl.searchParams.set("callbackUrl", nextUrl.pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+    if (role !== "DELIVERY" && role !== "ADMIN") {
       return NextResponse.redirect(new URL("/", nextUrl));
     }
   }

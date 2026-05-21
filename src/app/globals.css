@@ -1,1 +1,24 @@
 @import "tailwindcss";
+
+:root {
+  --toast-bg: #fff;
+  --toast-color: #333;
+  --toast-border: #e5e7eb;
+}
+
+.dark {
+  --toast-bg: #1f2937;
+  --toast-color: #f3f4f6;
+  --toast-border: #374151;
+}
+
+/* Smooth page transitions */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Focus outline for keyboard navigation */
+*:focus-visible {
+  outline: 2px solid #ea580c;
+  outline-offset: 2px;
+}

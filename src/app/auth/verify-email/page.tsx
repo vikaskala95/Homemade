@@ -30,31 +30,35 @@ function VerifyEmailContent() {
   }, [token]);
 
   return (
-    <Card className="w-full max-w-md">
+    <Card className="w-full max-w-md shadow-xl border-0 dark:bg-gray-900 dark:border dark:border-gray-800">
       <CardContent className="py-12 text-center">
         {status === "loading" && (
           <>
             <Loader2 className="h-12 w-12 animate-spin mx-auto mb-4 text-orange-500" />
-            <p className="text-lg font-medium">Verifying your email...</p>
+            <p className="text-lg font-medium dark:text-white">Verifying your email...</p>
           </>
         )}
         {status === "success" && (
           <>
-            <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-4" />
-            <p className="text-lg font-medium mb-2">Email Verified!</p>
-            <p className="text-gray-500 text-sm mb-6">Your email has been verified successfully.</p>
+            <div className="w-16 h-16 rounded-full bg-green-100 dark:bg-green-950 flex items-center justify-center mx-auto mb-4">
+              <CheckCircle className="h-8 w-8 text-green-600 dark:text-green-400" />
+            </div>
+            <p className="text-lg font-medium mb-2 dark:text-white">Email Verified!</p>
+            <p className="text-gray-500 dark:text-gray-400 text-sm mb-6">Your email has been verified successfully.</p>
             <Link href="/dashboard">
-              <Button className="bg-orange-600 hover:bg-orange-700">Go to Dashboard</Button>
+              <Button className="bg-orange-600 hover:bg-orange-700 rounded-lg">Go to Dashboard</Button>
             </Link>
           </>
         )}
         {status === "error" && (
           <>
-            <XCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-            <p className="text-lg font-medium mb-2">Verification Failed</p>
-            <p className="text-gray-500 text-sm mb-6">The link is invalid or has expired.</p>
+            <div className="w-16 h-16 rounded-full bg-red-100 dark:bg-red-950 flex items-center justify-center mx-auto mb-4">
+              <XCircle className="h-8 w-8 text-red-600 dark:text-red-400" />
+            </div>
+            <p className="text-lg font-medium mb-2 dark:text-white">Verification Failed</p>
+            <p className="text-gray-500 dark:text-gray-400 text-sm mb-6">The link is invalid or has expired.</p>
             <Link href="/dashboard">
-              <Button variant="outline">Go to Dashboard</Button>
+              <Button variant="outline" className="dark:border-gray-700">Go to Dashboard</Button>
             </Link>
           </>
         )}
@@ -65,10 +69,10 @@ function VerifyEmailContent() {
 
 export default function VerifyEmailPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <Suspense fallback={<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600" />}>
-        <VerifyEmailContent />
-      </Suspense>
-    </div>
+    <Suspense fallback={
+      <div className="w-full max-w-md h-[300px] rounded-xl bg-white/50 dark:bg-gray-900/50 animate-pulse" />
+    }>
+      <VerifyEmailContent />
+    </Suspense>
   );
 }
