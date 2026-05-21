@@ -108,7 +108,7 @@ app.prepare().then(() => {
     }
   });
 
-  httpServer.listen(port, () => {
+  httpServer.listen(port, hostname, () => {
     console.log(`> Ready on http://${hostname}:${port}`);
   });
 });

@@ -1,12 +1,26 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers";
+import { PWARegister } from "@/components/pwa-register";
 import { generateOrganizationJsonLd, generateWebsiteJsonLd } from "@/lib/structured-data";
 
 const inter = Inter({ subsets: ["latin"] });
 
+export const viewport: Viewport = {
+  themeColor: "#16a34a",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+};
+
 export const metadata: Metadata = {
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Homemade Everything",
+  },
   title: {
     default: "Homemade Everything - Buy & Sell Homemade Products",
     template: "%s | Homemade Everything",
@@ -76,6 +90,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(generateOrganizationJsonLd()) }}
@@ -87,6 +102,7 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <Providers>{children}</Providers>
+        <PWARegister />
       </body>
     </html>
   );
