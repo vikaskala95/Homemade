@@ -82,7 +82,7 @@ export const authConfig: NextAuthConfig = {
           token.id = dbUser.id;
           token.role = dbUser.role;
           token.phone = dbUser.phone;
-          token.emailVerified = !!dbUser.emailVerified;
+          token.emailVerified = dbUser.emailVerified;
         }
       }
       // Handle session updates (e.g., profile changes)
@@ -97,7 +97,7 @@ export const authConfig: NextAuthConfig = {
         session.user.id = token.id as string;
         session.user.role = token.role as string;
         session.user.phone = token.phone as string | null;
-        session.user.emailVerified = token.emailVerified as boolean;
+        session.user.emailVerified = token.emailVerified as Date | null;
       }
       return session;
     },
